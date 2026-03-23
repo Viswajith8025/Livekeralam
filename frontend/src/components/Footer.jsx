@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Facebook, Twitter, Instagram, Mail, MapPin, Phone } from 'lucide-react';
+import { Calendar, Globe, Share2, Send, Mail, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -20,13 +20,13 @@ const Footer = () => {
             </p>
             <div className="flex gap-4">
               <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-indigo-600 transition-colors">
-                <Instagram className="w-5 h-5" />
+                <Globe className="w-5 h-5" />
               </a>
               <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-indigo-600 transition-colors">
-                <Facebook className="w-5 h-5" />
+                <Share2 className="w-5 h-5" />
               </a>
               <a href="#" className="p-2 bg-gray-800 rounded-lg hover:bg-indigo-600 transition-colors">
-                <Twitter className="w-5 h-5" />
+                <Send className="w-5 h-5" />
               </a>
             </div>
           </div>
