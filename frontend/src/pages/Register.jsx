@@ -95,37 +95,6 @@ const Register = () => {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-emerald-950/70 ml-1">Account Type</label>
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'user' })}
-                  className={`flex-1 py-4 rounded-2xl border-2 transition-all font-black text-xs tracking-widest flex items-center justify-center gap-2 ${
-                    formData.role === 'user' 
-                      ? 'border-emerald-900 bg-emerald-900 text-gold-500 shadow-xl shadow-emerald-950/20' 
-                      : 'border-emerald-900/5 bg-emerald-900/5 text-emerald-950/40 hover:bg-emerald-900/10'
-                  }`}
-                >
-                  <User size={14} /> EXPLORER
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormData({ ...formData, role: 'admin' })}
-                  className={`flex-1 py-4 rounded-2xl border-2 transition-all font-black text-xs tracking-widest flex items-center justify-center gap-2 ${
-                    formData.role === 'admin' 
-                      ? 'border-emerald-900 bg-emerald-900 text-gold-500 shadow-xl shadow-emerald-950/20' 
-                      : 'border-emerald-900/5 bg-emerald-900/5 text-emerald-950/40 hover:bg-emerald-900/10'
-                  }`}
-                >
-                  <ShieldCheck size={14} /> ORGANIZER
-                </button>
-              </div>
-              <p className="text-[10px] text-emerald-900/30 text-center mt-3 px-4 font-medium uppercase tracking-tighter">
-                * Note: Admin privileges are subject to heritage verification.
-              </p>
-            </div>
-
             <button
               type="submit"
               disabled={loading}

@@ -3,12 +3,66 @@ import { useParams, Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowLeft, Share2, Heart, Loader2 } from 'lucide-react';
 import api from '../services/api';
 import ChatWindow from '../components/ChatWindow';
+import { useWishlist } from '../context/WishlistContext';
+import HeartButton from '../components/HeartButton';
+import { encodeJourney } from '../utils/shareUtils';
+import toast from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async';
 
 const EventDetail = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [bookingLoading, setBookingLoading] = useState(false);
+
+  const handleShare = () => {
+    const code = encodeJourney({ events: [event], places: [] });
+    const url = `${window.location.origin}/share/${code}`;
+    navigator.clipboard.writeText(url);
+    toast.success('Share link copied to clipboard!');
+  };
+
+  const handleBooking = async () => {
+    try {
+      setBookingLoading(true);
+      // 1. Create Order on Backend
+      const orderRes = await api.post('/payments/order', { eventId: id });
+      const orderData = orderRes.data.data;
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'LiveKeralam',
+        description: `Booking for ${event.title}`,
+        order_id: orderData.id,
+        handler: async (response) => {
+          try {
+            // 2. Verify Payment on Backend
+            await api.post('/payments/verify', response);
+            toast.success('Booking Successful! Experience awaits.');
+          } catch (err) {
+            toast.error('Payment verification failed.');
+          }
+        },
+        prefill: {
+          name: 'Traveler',
+          email: 'traveler@livekeralam.com',
+        },
+        theme: {
+          color: '#064e3b',
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      toast.error('Failed to initiate booking.');
+    } finally {
+      setBookingLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -49,6 +103,14 @@ const EventDetail = () => {
 
   return (
     <div className="min-h-screen bg-[#FDFDFF] pt-32 pb-20">
+      <Helmet>
+        <title>{event.title} | LiveKeralam</title>
+        <meta name="description" content={event.description.substring(0, 160)} />
+        <meta property="og:title" content={`${event.title} at ${event.location}`} />
+        <meta property="og:description" content={event.description.substring(0, 160)} />
+        <meta property="og:image" content={event.image} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-indigo-600 font-bold mb-10 transition-colors">
           <ArrowLeft className="w-4 h-4" />
@@ -64,12 +126,13 @@ const EventDetail = () => {
                 alt={event.title} 
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-6 right-6 flex gap-3">
-                <button className="p-4 bg-white/80 backdrop-blur-md rounded-2xl shadow-xl hover:bg-white transition-all">
-                  <Heart className="w-5 h-5 text-red-500" />
-                </button>
-                <button className="p-4 bg-white/80 backdrop-blur-md rounded-2xl shadow-xl hover:bg-white transition-all">
-                  <Share2 className="w-5 h-5 text-gray-700" />
+              <div className="absolute top-6 right-6 flex gap-3 z-30">
+                <HeartButton item={event} type="event" className="shadow-xl" />
+                <button 
+                  onClick={handleShare}
+                  className="p-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white hover:bg-white/20 transition-all shadow-xl"
+                >
+                  <Share2 className="w-5 h-5 shadow-emerald-950" />
                 </button>
               </div>
             </div>
@@ -115,8 +178,33 @@ const EventDetail = () => {
             </div>
           </div>
 
-          {/* Sidebar - Chat */}
+          {/* Sidebar - Booking & Chat */}
           <div className="space-y-8">
+            <div className="bg-emerald-950 p-10 rounded-[3rem] shadow-2xl space-y-8 border border-white/5">
+               <div className="space-y-2">
+                 <p className="text-[10px] text-gold-500 font-black uppercase tracking-[0.4em]">Experience Cost</p>
+                 <h2 className="text-5xl font-display font-medium text-white">
+                   ₹{event.price || 499} <span className="text-sm font-medium text-white/30 italic">/ person</span>
+                 </h2>
+               </div>
+               
+               <button 
+                 onClick={handleBooking}
+                 disabled={bookingLoading}
+                 className="w-full py-6 bg-gold-500 text-emerald-950 rounded-2xl font-black text-xs tracking-[0.3em] uppercase hover:bg-white transition-all shadow-xl shadow-gold-500/20 flex items-center justify-center gap-3 disabled:opacity-50"
+               >
+                 {bookingLoading ? (
+                   <Loader2 className="w-4 h-4 animate-spin" />
+                 ) : (
+                   <>Reserve Spot <ArrowRight className="w-4 h-4" /></>
+                 )}
+               </button>
+
+               <p className="text-[10px] text-white/30 text-center font-bold tracking-widest uppercase italic">
+                 Verified Heritage Experience
+               </p>
+            </div>
+
             <ChatWindow eventId={event._id} eventTitle={event.title} />
           </div>
         </div>

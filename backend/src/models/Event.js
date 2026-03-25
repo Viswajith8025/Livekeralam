@@ -46,6 +46,10 @@ const eventSchema = new mongoose.Schema(
       type: Number,
       required: false, // Optional for now
     },
+    price: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

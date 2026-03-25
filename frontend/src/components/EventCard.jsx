@@ -30,6 +30,8 @@ const EventCard = ({ event }) => {
             <span className="text-[10px] font-black text-gold-500 uppercase tracking-[0.2em]">Exclusive</span>
           </div>
 
+          <HeartButton item={event} type="event" className="absolute top-5 right-5 z-20" />
+
           {/* Date Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-emerald-950/90 to-transparent">
              <p className="text-white font-display text-2xl italic">{formattedDate}</p>

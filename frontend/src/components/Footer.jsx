@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, Globe, Share2, Send, Mail, MapPin, Phone } from 'lucide-react';
+import { Calendar, Globe, Share2, Send, Mail, MapPin, Phone, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 
@@ -33,14 +33,28 @@ const Footer = () => {
             </div>
           </div>
 
+          {/* Partner with Us */}
+          <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 space-y-6">
+            <h4 className="text-lg font-bold">Publish with Us</h4>
+            <p className="text-sm text-gray-400 leading-relaxed italic">
+              Want to advertise your event or publish your heritage experience here? 
+            </p>
+            <Link 
+              to="/contact" 
+              className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gold-500 hover:text-white transition-colors"
+            >
+              Connect with us <ArrowRight className="w-3 h-3" />
+            </Link>
+          </div>
+
           {/* Quick Links */}
-          <div>
-            <h4 className="text-lg font-bold mb-6">Quick Links</h4>
-            <ul className="space-y-4 text-gray-400">
-              <li><Link to="/" className="hover:text-white transition-colors">Upcoming Events</Link></li>
-              <li><Link to="/places" className="hover:text-white transition-colors">Tourist Places</Link></li>
-              <li><Link to="/login" className="hover:text-white transition-colors">Manage Events</Link></li>
-              <li><a href="#" className="hover:text-white transition-colors">About Kerala</a></li>
+          <div className="lg:pl-10">
+            <h4 className="text-lg font-bold mb-6">Explore</h4>
+            <ul className="space-y-4 text-gray-400 text-sm font-medium">
+              <li><Link to="/" className="hover:text-gold-500 transition-colors">Upcoming Traditions</Link></li>
+              <li><Link to="/places" className="hover:text-gold-500 transition-colors">Sanctuaries</Link></li>
+              <li><Link to="/about" className="hover:text-gold-500 transition-colors">Our Story</Link></li>
+              <li><Link to="/contact" className="hover:text-gold-500 transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 

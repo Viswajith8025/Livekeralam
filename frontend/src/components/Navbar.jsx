@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, MapPin, Calendar, Heart, Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
+import { useWishlist } from '../context/WishlistContext';
 import logo from '../assets/logo.png';
 
 const Navbar = () => {
@@ -46,6 +47,22 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-8">
           <Link to="/" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Events</Link>
           <Link to="/places" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Places</Link>
+          <Link to="/about" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>About</Link>
+          <Link to="/contact" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Contact</Link>
+          
+          <Link to="/soulsync" className="flex items-center gap-2 px-5 py-2.5 bg-gold-500/10 border border-gold-500/30 rounded-xl group hover:bg-gold-500/20 transition-all">
+            <Sparkles className="w-4 h-4 text-gold-600 group-hover:scale-125 transition-transform" />
+            <span className="text-[10px] font-black text-gold-600 uppercase tracking-widest">SoulSync AI</span>
+          </Link>
+          
+          <Link to="/wishlist" className="relative group p-2">
+            <Heart className={`w-6 h-6 transition-all ${isScrolled ? 'text-white group-hover:text-gold-500' : 'text-emerald-950 group-hover:text-emerald-700'}`} />
+            { (useWishlist().wishlist.events.length + useWishlist().wishlist.places.length) > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-lg border-2 border-emerald-950 animate-bounce">
+                {useWishlist().wishlist.events.length + useWishlist().wishlist.places.length}
+              </span>
+            )}
+          </Link>
           
           <div className="h-6 w-px bg-white/10 mx-2"></div>
 
@@ -89,6 +106,8 @@ const Navbar = () => {
             <div className="space-y-6">
               <Link to="/" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Events</Link>
               <Link to="/places" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Places</Link>
+              <Link to="/about" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Our Story</Link>
+              <Link to="/contact" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Contact</Link>
               <div className="h-px bg-white/10 my-8"></div>
               {isLoggedIn ? (
                 <button onClick={handleLogout} className="w-full bg-gold-500 text-emerald-950 py-5 rounded-2xl font-black">LOGOUT</button>

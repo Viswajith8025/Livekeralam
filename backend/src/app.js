@@ -10,6 +10,9 @@ const authRoutes = require('./routes/authRoutes');
 const placeRoutes = require('./routes/placeRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+
+const errorHandler = require('./middlewares/error');
 
 const app = express();
 
@@ -46,6 +49,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/places', placeRoutes);
 app.use('/api/v1/messages', messageRoutes);
 app.use('/api/v1/upload', uploadRoutes);
+app.use('/api/v1/payments', paymentRoutes);
 
 // Routes
 app.get('/health', (req, res) => {
@@ -53,12 +57,6 @@ app.get('/health', (req, res) => {
 });
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  res.status(statusCode).json({
-    message: err.message,
-    stack: process.env.NODE_ENV === 'production' ? null : err.stack,
-  });
-});
+app.use(errorHandler);
 
 module.exports = app;

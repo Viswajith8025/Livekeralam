@@ -27,7 +27,7 @@ const placeSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['Beach', 'Hill Station', 'Backwater', 'Waterfall', 'Heritage', 'Temple', 'other'],
+      enum: ['Beach', 'Hill Station', 'Backwater', 'Waterfall', 'Heritage', 'Temple', 'Spiritual', 'Nature', 'other'],
       default: 'other',
     },
   },

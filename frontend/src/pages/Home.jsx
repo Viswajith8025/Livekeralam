@@ -5,6 +5,7 @@ import EventFilter from '../components/EventFilter';
 import EventMap from '../components/EventMap';
 import { EventCardSkeleton } from '../components/Skeleton';
 import api from '../services/api';
+import { Helmet } from 'react-helmet-async';
 
 const Home = () => {
   const [events, setEvents] = useState([]);
@@ -53,7 +54,11 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F6F1]">
+    <div className="min-h-screen bg-[#FDFDFF] pb-40 overflow-hidden">
+      <Helmet>
+        <title>LiveKeralam | God's Own Events & Heritage</title>
+        <meta name="description" content="Discover exclusive cultural festivals, sacred rituals, and hidden heritage spots across Kerala." />
+      </Helmet>
       {/* Editorial Hero Section */}
       <section className="relative h-screen min-h-[900px] flex items-center overflow-hidden bg-emerald-950">
         <div className="absolute inset-0 z-0">

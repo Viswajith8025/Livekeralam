@@ -10,6 +10,15 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminDashboard from './pages/AdminDashboard';
 import EventDetail from './pages/EventDetail';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import Wishlist from './pages/Wishlist';
+import SharedJourney from './pages/SharedJourney';
+import SoulSync from './pages/SoulSync';
+import WhatsAppButton from './components/WhatsAppButton';
+import { WishlistProvider } from './context/WishlistContext';
+import { HelmetProvider } from 'react-helmet-async';
+import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://eventkerala-backend-sfup.onrender.com/api/v1';
@@ -54,21 +63,33 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Toaster position="top-right" />
-      <Navbar />
-      <main className="flex-grow bg-[#FDFDFF]">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/places" element={<Places />} />
-          <Route path="/events/:id" element={<EventDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-        </Routes>
-      </main>
-      <Footer />
-    </div>
+    <ErrorBoundary>
+      <HelmetProvider>
+        <WishlistProvider>
+          <div className="flex flex-col min-h-screen">
+            <Toaster position="top-right" />
+            <Navbar />
+            <main className="flex-grow bg-[#FDFDFF]">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/places" element={<Places />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/soulsync" element={<SoulSync />} />
+                <Route path="/share/:code" element={<SharedJourney />} />
+                <Route path="/events/:id" element={<EventDetail />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+              </Routes>
+            </main>
+            <Footer />
+            <WhatsAppButton />
+          </div>
+        </WishlistProvider>
+      </HelmetProvider>
+    </ErrorBoundary>
   );
 }
 

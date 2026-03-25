@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { MapPin, Loader2, Compass, Sparkles, Footprints } from 'lucide-react';
+import { MapPin, Loader2, Compass, Sparkles, Footprints, ArrowRight } from 'lucide-react';
 import api from '../services/api';
 import { PlaceCardSkeleton } from '../components/Skeleton';
+import HeartButton from '../components/HeartButton';
+import { Helmet } from 'react-helmet-async';
 
 const Places = () => {
   const [places, setPlaces] = useState([]);
@@ -25,7 +27,11 @@ const Places = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F9F6F1] pt-32">
+    <div className="min-h-screen bg-[#FDFDFF] pt-40 pb-40">
+      <Helmet>
+        <title>Heritage Places | LiveKeralam</title>
+        <meta name="description" content="Explore sacred temples, historic forts, and serene backwater sanctuaries in Kerala." />
+      </Helmet>
       <div className="max-w-7xl mx-auto px-6 py-20 relative">
         
         <div className="text-center mb-32 space-y-10 relative">
@@ -73,6 +79,7 @@ const Places = () => {
                     <div className="absolute top-6 right-6 bg-emerald-950/80 backdrop-blur-md px-5 py-2.5 rounded-2xl text-[10px] font-black text-gold-500 uppercase tracking-widest border border-gold-500/30">
                       {place.category || 'Spotlight'}
                     </div>
+                    <HeartButton item={place} type="place" className="absolute top-6 left-6 z-20" />
                   </div>
                   
                   <div className="p-8 pt-10 text-center space-y-6">
