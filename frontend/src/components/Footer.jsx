@@ -37,10 +37,10 @@ const Footer = () => {
           <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 space-y-6">
             <h4 className="text-lg font-bold">Publish with Us</h4>
             <p className="text-sm text-gray-400 leading-relaxed italic">
-              Want to advertise your event or publish your heritage experience here? 
+              Want to advertise your event or publish your heritage experience here?
             </p>
-            <Link 
-              to="/contact" 
+            <Link
+              to="/contact"
               className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gold-500 hover:text-white transition-colors"
             >
               Connect with us <ArrowRight className="w-3 h-3" />
@@ -75,15 +75,15 @@ const Footer = () => {
             <ul className="space-y-4 text-gray-400">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-gold-500 mt-1 flex-shrink-0" />
-                <span>Thiruvananthapuram, Kerala, India</span>
+                <span>Kozhikode, Kerala, India</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <span>+91 471 2345678</span>
+                <span>+91 7736958025</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-gold-500 flex-shrink-0" />
-                <span>hello@livekeralam.com</span>
+                <span>[EMAIL_ADDRESS]</span>
               </li>
             </ul>
           </div>

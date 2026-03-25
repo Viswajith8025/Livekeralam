@@ -1,12 +1,12 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Send, MessageCircle, Instagram, Twitter, Facebook } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageCircle, Globe, Share2 } from 'lucide-react';
 
 const Contact = () => {
   return (
     <div className="min-h-screen bg-[#F9F6F1] pt-32">
       <div className="max-w-7xl mx-auto px-6 py-24 relative">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-32 items-start">
-          
+
           {/* Contact Info */}
           <div className="space-y-16">
             <div className="space-y-6">
@@ -39,7 +39,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30 mb-1">Call Us</p>
-                  <p className="text-lg font-bold text-emerald-950">+91 471 2345678</p>
+                  <p className="text-lg font-bold text-emerald-950">+91 7736958025</p>
                 </div>
               </div>
 
@@ -49,7 +49,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30 mb-1">Visit Us</p>
-                  <p className="text-lg font-bold text-emerald-950">Trivandrum, Kerala, India</p>
+                  <p className="text-lg font-bold text-emerald-950">Kozhikode, Kerala, India</p>
                 </div>
               </div>
             </div>
@@ -59,13 +59,13 @@ const Contact = () => {
               <p className="text-[10px] font-black uppercase tracking-widest text-emerald-900/30 italic">Follow our journey</p>
               <div className="flex gap-6">
                 <a href="#" className="w-12 h-12 rounded-full border border-emerald-950/10 flex items-center justify-center hover:bg-emerald-950 hover:text-white transition-all duration-500">
-                  <Instagram className="w-5 h-5" />
+                  <MessageCircle className="w-5 h-5" />
                 </a>
                 <a href="#" className="w-12 h-12 rounded-full border border-emerald-950/10 flex items-center justify-center hover:bg-emerald-950 hover:text-white transition-all duration-500">
-                  <Twitter className="w-5 h-5" />
+                  <Globe className="w-5 h-5" />
                 </a>
                 <a href="#" className="w-12 h-12 rounded-full border border-emerald-950/10 flex items-center justify-center hover:bg-emerald-950 hover:text-white transition-all duration-500">
-                  <Facebook className="w-5 h-5" />
+                  <Share2 className="w-5 h-5" />
                 </a>
               </div>
             </div>
@@ -75,7 +75,7 @@ const Contact = () => {
           <div className="bg-white p-12 md:p-16 rounded-[4rem] shadow-2xl shadow-emerald-950/5 border border-emerald-900/5 relative overflow-hidden group">
             {/* Background Accent */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-900/5 rounded-full blur-3xl -mr-32 -mt-32"></div>
-            
+
             <form className="space-y-8 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-2">

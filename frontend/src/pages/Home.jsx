@@ -92,9 +92,9 @@ const Home = () => {
                  <button onClick={() => window.scrollTo({ top: window.innerHeight - 100, behavior: 'smooth' })} className="px-12 py-6 bg-gold-500 text-emerald-950 rounded-2xl font-black text-[10px] tracking-[0.3em] hover:scale-105 transition-all shadow-2xl shadow-gold-500/30 group flex items-center gap-3">
                    START EXPLORING <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                  </button>
-                 <div className="flex items-center gap-4 text-white/40 cursor-pointer hover:text-gold-500 transition-colors group">
-                    <div className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center group-hover:border-gold-500/50 transition-all">
-                      <ScrollText className="w-6 h-6 border-b-2 border-transparent group-hover:scale-110 transition-all" />
+                 <div className="flex items-center gap-4 text-white/30 cursor-pointer hover:text-gold-500 transition-colors group">
+                    <div className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center group-hover:border-gold-500/50 transition-all">
+                       <ScrollText className="w-6 h-6 border-b-2 border-transparent group-hover:scale-110 transition-all" />
                     </div>
                     <span className="text-[10px] font-black tracking-[0.4em] uppercase">Scroll Traditions</span>
                  </div>
@@ -118,7 +118,7 @@ const Home = () => {
       </section>
 
       {/* Event Grid Section */}
-      <section className="max-w-7xl mx-auto px-6 py-40">
+      <section id="events" className="max-w-7xl mx-auto px-6 py-40">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-24 border-b border-emerald-900/10 pb-12">
           <div className="space-y-4">
             <h2 className="text-6xl font-display font-medium text-emerald-950">

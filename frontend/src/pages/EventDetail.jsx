@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Calendar, MapPin, ArrowLeft, Share2, Heart, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, ArrowLeft, Share2, Heart, Loader2, ArrowRight } from 'lucide-react';
 import api from '../services/api';
 import ChatWindow from '../components/ChatWindow';
 import { useWishlist } from '../context/WishlistContext';

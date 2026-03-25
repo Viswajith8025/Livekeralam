@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, ArrowRight, Sparkles } from 'lucide-react';
+import HeartButton from './HeartButton';
 
 const EventCard = ({ event }) => {
   const date = new Date(event.date);

@@ -12,7 +12,7 @@ connectDB();
 const server = http.createServer(app);
 const io = socketio(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || '*',
+    origin: [process.env.FRONTEND_URL, 'https://eventkeralamm.vercel.app', 'http://localhost:5173'].filter(Boolean),
     methods: ['GET', 'POST'],
     credentials: true
   }

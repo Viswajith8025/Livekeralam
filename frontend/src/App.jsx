@@ -16,12 +16,13 @@ import Wishlist from './pages/Wishlist';
 import SharedJourney from './pages/SharedJourney';
 import SoulSync from './pages/SoulSync';
 import WhatsAppButton from './components/WhatsAppButton';
+import ScrollToTop from './components/ScrollToTop';
 import { WishlistProvider } from './context/WishlistContext';
 import { HelmetProvider } from 'react-helmet-async';
 import ErrorBoundary from './components/ErrorBoundary';
 import ProtectedRoute from './components/ProtectedRoute';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://eventkerala-backend-sfup.onrender.com/api/v1';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 
 function App() {
   useEffect(() => {
@@ -68,6 +69,7 @@ function App() {
         <WishlistProvider>
           <div className="flex flex-col min-h-screen">
             <Toaster position="top-right" />
+            <ScrollToTop />
             <Navbar />
             <main className="flex-grow bg-[#FDFDFF]">
               <Routes>

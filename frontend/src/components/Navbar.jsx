@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, MapPin, Calendar, Heart, Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
+import { Search, MapPin, Calendar, Heart, Menu, X, LogOut, LayoutDashboard, Sparkles } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
 import logo from '../assets/logo.png';
 
@@ -45,7 +45,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          <Link to="/" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Events</Link>
+          <Link to="/#events" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Events</Link>
           <Link to="/places" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Places</Link>
           <Link to="/about" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>About</Link>
           <Link to="/contact" className={`font-bold text-sm tracking-wide uppercase transition-colors ${isScrolled ? 'text-gray-300 hover:text-gold-500' : 'text-emerald-900 hover:text-emerald-700'}`}>Contact</Link>
@@ -104,7 +104,7 @@ const Navbar = () => {
         <div className="fixed inset-0 top-[100px] z-40 px-4 md:hidden">
           <div className="bg-emerald-950/95 backdrop-blur-3xl rounded-[3rem] border border-white/10 p-8 shadow-2xl animate-in slide-in-from-top-4">
             <div className="space-y-6">
-              <Link to="/" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Events</Link>
+              <Link to="/#events" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Events</Link>
               <Link to="/places" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Places</Link>
               <Link to="/about" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Our Story</Link>
               <Link to="/contact" onClick={() => setIsOpen(false)} className="block text-3xl font-display font-bold text-white">Contact</Link>
