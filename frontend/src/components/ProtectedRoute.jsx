@@ -5,13 +5,16 @@ import { Navigate } from 'react-router-dom';
 // In a real app, you'd decode the JWT to check for 'admin' role.
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  // NOTE: For true security, the backend role check (authorize('admin')) handles the data protection.
-  // Frontend protection is mainly for UX/Navigation.
+  if (user.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 };
 

@@ -16,10 +16,18 @@ const Login = () => {
 
     try {
       const response = await api.post('/auth/login', formData);
-      localStorage.setItem('token', response.data.token);
-      // For a real app, you'd decode the JWT to get role, but for now we'll just redirect
-      window.dispatchEvent(new Event('authChange')); // Trigger navbar update
-      navigate('/');
+      const { token, user } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      window.dispatchEvent(new Event('authChange')); 
+      
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
