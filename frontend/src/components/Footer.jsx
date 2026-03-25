@@ -15,6 +15,7 @@ const Footer = () => {
                 <img src={logo} alt="LiveKeralam Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-2xl font-display font-bold tracking-tight">Live<span className="text-gold-500 italic">Keralam</span></span>
+              <span className="text-[8px] bg-emerald-900/40 px-2 py-0.5 rounded text-white/50 font-mono">v1.0.2-prod</span>
             </Link>
             <p className="text-gray-400 leading-relaxed font-light italic">
               Experience the soul of God's Own Country through curated celebrations and legendary traditions.

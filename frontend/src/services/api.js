@@ -7,6 +7,8 @@ const api = axios.create({
   },
 });
 
+console.log('LiveKeralam API BaseURL:', api.defaults.baseURL);
+
 // Add a request interceptor to include the JWT token
 api.interceptors.request.use(
   (config) => {
