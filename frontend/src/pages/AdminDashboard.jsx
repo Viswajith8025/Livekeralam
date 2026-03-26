@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { 
   CheckCircle, XCircle, Clock, LayoutDashboard, Settings, 
   Users, Calendar, Plus, X, Search, Filter, Trash2, AlertCircle, MapPin, MessageSquare, Send
 } from 'lucide-react';
 import api from '../services/api';
+import { io } from 'socket.io-client';
 import ImageUpload from '../components/ImageUpload';
 import { KERALA_DISTRICTS } from '../utils/constants';
 
@@ -14,6 +15,10 @@ const AdminDashboard = () => {
   const [messages, setMessages] = useState([]);
   const [contactMessages, setContactMessages] = useState([]);
   const [activeMessageSubTab, setActiveMessageSubTab] = useState('chats');
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [replyMessage, setReplyMessage] = useState('');
+  const socketRef = useRef();
+  const messagesEndRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAddPlaceModal, setShowAddPlaceModal] = useState(false);
@@ -79,6 +84,26 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
+    // Initialize Socket
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+    socketRef.current = io(API_URL.replace('/api/v1', ''));
+
+    socketRef.current.on('receive_message', (data) => {
+      setMessages((prev) => [data, ...prev]);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (selectedEventId) {
+      socketRef.current.emit('join_room', selectedEventId);
+    }
+  }, [selectedEventId]);
+
+  useEffect(() => {
     if (activeTab === 'events') {
       fetchAllEvents();
     } else if (activeTab === 'places') {
@@ -91,6 +116,24 @@ const AdminDashboard = () => {
       }
     }
   }, [activeTab, activeMessageSubTab]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, selectedEventId]);
+
+  // Group messages by event for the sidebar
+  const eventThreads = Array.from(new Set(messages
+    .filter(m => m.event?._id)
+    .map(m => m.event._id)
+  )).map(eventId => {
+    const threadMessages = messages.filter(m => m.event?._id === eventId);
+    return {
+      eventId,
+      eventTitle: threadMessages[0].event.title,
+      lastMessage: threadMessages[0],
+      unreadCount: 0 // Placeholder
+    };
+  });
 
   const handleStatusUpdate = async (id, status) => {
     try {
@@ -605,63 +648,136 @@ const AdminDashboard = () => {
                 </tbody>
               </table>
             ) : activeMessageSubTab === 'chats' ? (
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-gray-50/50 border-b border-gray-100">
-                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Sender</th>
-                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Event</th>
-                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">Message Content</th>
-                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Time</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
-                  {messages.filter(m => 
-                    (m.senderName || '').toLowerCase().includes(searchTerm.toLowerCase()) || 
-                    (m.content || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    (m.event?.title || '').toLowerCase().includes(searchTerm.toLowerCase())
-                  ).map((message) => (
-                    <tr key={message._id} className="hover:bg-indigo-50/30 transition-all group">
-                      <td className="px-10 py-8">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black ${
-                            (message.senderName || '').includes('Admin') ? 'bg-amber-100 text-amber-600 ring-2 ring-amber-500/20' : 'bg-indigo-100 text-indigo-600'
-                          }`}>
-                            {(message.senderName || 'A')[0].toUpperCase()}
+              <div className="flex bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-2xl h-[650px]">
+                {/* Conversations Sidebar */}
+                <div className="w-1/3 border-r border-gray-100 flex flex-col bg-gray-50/30">
+                  <div className="p-6 border-b border-gray-100 bg-white">
+                    <h3 className="font-black text-gray-900 font-display flex items-center gap-2">
+                       <MessageSquare className="w-4 h-4 text-indigo-600" />
+                       Event Channels
+                    </h3>
+                  </div>
+                  <div className="flex-1 overflow-y-auto">
+                    {eventThreads.length === 0 ? (
+                      <div className="p-10 text-center opacity-30">
+                        <p className="text-xs font-bold uppercase tracking-widest">No active threads</p>
+                      </div>
+                    ) : (
+                      eventThreads.map(thread => (
+                        <button 
+                          key={thread.eventId}
+                          onClick={() => setSelectedEventId(thread.eventId)}
+                          className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedEventId === thread.eventId ? 'bg-white ring-1 ring-inset ring-indigo-500/10 border-l-4 border-l-indigo-600' : ''}`}
+                        >
+                          <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xs shrink-0">
+                            {thread.eventTitle[0].toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex justify-between items-start mb-1">
+                              <h4 className="font-black text-gray-900 text-sm truncate">{thread.eventTitle}</h4>
+                              <span className="text-[8px] font-black text-gray-400 uppercase">{new Date(thread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            </div>
+                            <p className="text-xs text-gray-500 line-clamp-1 font-medium">{thread.lastMessage.content}</p>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+
+                {/* Chat Window */}
+                <div className="flex-1 flex flex-col bg-white">
+                  {selectedEventId ? (
+                    <>
+                      {/* Thread Header */}
+                      <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white shadow-sm z-10">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-xs">
+                           {eventThreads.find(t => t.eventId === selectedEventId)?.eventTitle[0].toUpperCase()}
                           </div>
                           <div>
-                            <span className="font-black text-gray-900 block">{message.senderName || 'Anonymous'}</span>
-                            {(message.senderName || '').includes('Admin') && <span className="text-[8px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full uppercase tracking-widest font-black">Official</span>}
+                            <h4 className="font-black text-gray-900">{eventThreads.find(t => t.eventId === selectedEventId)?.eventTitle}</h4>
+                            <p className="text-[8px] text-green-500 font-black uppercase tracking-widest flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Live Channel
+                            </p>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-10 py-8">
-                        <span className="font-bold text-gray-600 text-sm">{message.event?.title || 'Closed Event'}</span>
-                      </td>
-                      <td className="px-10 py-8">
-                        <div className="space-y-4">
-                          <p className="text-sm text-gray-500 font-medium leading-relaxed max-w-md">{message.content}</p>
-                          <div className="opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
-                            <button 
-                              onClick={() => {
-                                const reply = prompt(`Reply to ${message.senderName}:`);
-                                if (reply) handleReplyMessage(message.event?._id, reply);
-                              }}
-                              className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100/50 flex items-center gap-2"
-                            >
-                              <Plus className="w-3 h-3" /> Quick Reply
-                            </button>
+                      </div>
+
+                      {/* Messages Area */}
+                      <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-gray-50/20">
+                        {messages.filter(m => m.event?._id === selectedEventId).slice().reverse().map((msg, idx) => (
+                          <div key={msg._id || idx} className={`flex flex-col ${msg.senderName.includes('Admin') ? 'items-end' : 'items-start'}`}>
+                            <div className="flex items-center gap-2 mb-1.5 px-1">
+                              <span className={`text-[10px] font-black uppercase tracking-tighter ${msg.senderName.includes('Admin') ? 'text-indigo-600' : 'text-gray-400'}`}>
+                                {msg.senderName}
+                                {msg.senderName.includes('Admin') && <span className="ml-1.5 bg-indigo-600 text-white px-1.5 py-0.5 rounded-full text-[8px]">OFFICIAL</span>}
+                              </span>
+                            </div>
+                            <div className={`max-w-[75%] px-6 py-4 rounded-[1.5rem] text-sm font-medium shadow-sm transition-all hover:shadow-md ${
+                              msg.senderName.includes('Admin') 
+                                ? 'bg-indigo-600 text-white rounded-tr-none' 
+                                : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
+                            }`}>
+                              {msg.content}
+                            </div>
+                            <span className="text-[8px] font-black text-gray-300 mt-2 px-2 uppercase italic">
+                              {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            </span>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-10 py-8 text-right">
-                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                          {new Date(message.createdAt).toLocaleString()}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        ))}
+                        <div ref={messagesEndRef} />
+                      </div>
+
+                      {/* Input Area */}
+                      <div className="p-6 bg-white border-t border-gray-100">
+                        <form 
+                          onSubmit={async (e) => {
+                            e.preventDefault();
+                            if (!replyMessage.trim()) return;
+                            try {
+                              const response = await api.post('/messages', {
+                                event: selectedEventId,
+                                content: `${replyMessage}`,
+                                senderName: 'LiveKeralam Admin'
+                              });
+                              // The socket listener handles adding to local state
+                              setReplyMessage('');
+                            } catch (err) {
+                              alert('Failed to send reply');
+                            }
+                          }}
+                          className="relative flex items-center"
+                        >
+                          <input 
+                            type="text"
+                            placeholder="Type a message..."
+                            className="w-full bg-gray-50 border-transparent focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/5 rounded-2xl px-6 py-4 pr-16 text-sm font-medium transition-all"
+                            value={replyMessage}
+                            onChange={(e) => setReplyMessage(e.target.value)}
+                          />
+                          <button 
+                            type="submit"
+                            className="absolute right-2 p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+                          >
+                            <Send className="w-4 h-4" />
+                          </button>
+                        </form>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex-1 flex flex-col items-center justify-center p-20 text-center space-y-6">
+                      <div className="w-24 h-24 bg-indigo-50 rounded-full flex items-center justify-center">
+                        <MessageSquare className="w-10 h-10 text-indigo-300" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-gray-900 font-display">Messenger Control</h3>
+                        <p className="text-gray-400 font-medium max-w-xs mx-auto mt-2 italic">Select a community thread on the left to start moderating live discussions.</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             ) : (
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -737,5 +853,6 @@ const AdminDashboard = () => {
     </div>
   );
 };
+
 
 export default AdminDashboard;
