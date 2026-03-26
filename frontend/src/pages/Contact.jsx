@@ -16,7 +16,8 @@ const Contact = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await api.post('/contact', formData);
+      const response = await api.post('/contact', formData);
+      console.log('Contact submission response:', response.data);
       toast.success('Message sent successfully! Our team will contact you shortly.', {
         duration: 5000,
         position: 'bottom-center',

@@ -604,7 +604,7 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
-            ) : activeMessageSubTab === 'eventChat' ? (
+            ) : activeMessageSubTab === 'chats' ? (
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-gray-50/50 border-b border-gray-100">
@@ -724,7 +724,7 @@ const AdminDashboard = () => {
               </table>
             )}
             
-            {((activeTab === 'events' && filteredEvents.length === 0) || (activeTab === 'places' && places.length === 0) || (activeTab === 'messages' && activeMessageSubTab === 'eventChat' && messages.length === 0) || (activeTab === 'messages' && activeMessageSubTab === 'inquiries' && contactMessages.length === 0)) && !loading && (
+            {((activeTab === 'events' && filteredEvents.length === 0) || (activeTab === 'places' && places.length === 0) || (activeTab === 'messages' && activeMessageSubTab === 'chats' && messages.length === 0) || (activeTab === 'messages' && activeMessageSubTab === 'inquiries' && contactMessages.length === 0)) && !loading && (
               <div className="py-32 flex flex-col items-center justify-center text-center space-y-4">
                 <AlertCircle className="w-16 h-16 text-gray-200" />
                 <p className="text-gray-400 font-bold font-display text-xl">No {activeTab} discovered matching your search.</p>
