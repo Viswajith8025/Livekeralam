@@ -32,3 +32,18 @@ exports.createPlace = catchAsync(async (req, res, next) => {
     data: place,
   });
 });
+// @desc    Delete a place (Admin)
+// @route   DELETE /api/v1/places/:id
+// @access  Private/Admin
+exports.deletePlace = catchAsync(async (req, res, next) => {
+  const place = await Place.findByIdAndDelete(req.params.id);
+
+  if (!place) {
+    return next(new ErrorResponse('Place not found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Place deleted successfully',
+  });
+});

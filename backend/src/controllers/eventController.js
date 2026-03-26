@@ -74,8 +74,8 @@ exports.filterEvents = catchAsync(async (req, res, next) => {
 exports.updateEventStatus = catchAsync(async (req, res, next) => {
   const { status } = req.body;
 
-  if (!['approved', 'rejected', 'pending'].includes(status)) {
-    return next(new ErrorResponse('Invalid status. Please use approved, rejected, or pending.', 400));
+  if (!['approved', 'rejected', 'pending', 'finished'].includes(status)) {
+    return next(new ErrorResponse('Invalid status. Please use approved, rejected, pending, or finished.', 400));
   }
 
   const event = await Event.findByIdAndUpdate(
