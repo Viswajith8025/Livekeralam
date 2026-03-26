@@ -35,6 +35,32 @@ exports.saveMessage = async (req, res, next) => {
       success: true,
       data: message,
     });
+
+    // Handle real-time emission
+    const io = req.app.get('socketio');
+    if (io) {
+      io.to(event).emit('receive_message', {
+        ...message._doc,
+        eventId: event // Maintain compatibility with frontend expectation
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+// @desc    Get all messages (Admin)
+// @route   GET /api/v1/messages
+// @access  Private/Admin
+exports.getAllMessages = async (req, res, next) => {
+  try {
+    const messages = await Message.find()
+      .populate('event', 'title')
+      .sort('-createdAt');
+
+    res.status(200).json({
+      success: true,
+      data: messages,
+    });
   } catch (error) {
     next(error);
   }

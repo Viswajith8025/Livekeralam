@@ -116,13 +116,17 @@ const ChatWindow = ({ eventId, eventTitle }) => {
               className={`flex flex-col ${msg.senderName === user.name ? 'items-end' : 'items-start'}`}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">
+                <span className={`text-[10px] font-bold uppercase tracking-tighter ${msg.senderName.includes('Admin') ? 'text-amber-600' : 'text-gray-400'}`}>
                   {msg.senderName}
+                  {msg.senderName.includes('Admin') && <span className="ml-1 bg-amber-500 text-white px-1.5 py-0.5 rounded-full text-[8px]">OFFICIAL</span>}
                 </span>
               </div>
-              <div className={`px-4 py-2.5 rounded-2xl max-w-[80%] text-sm font-medium shadow-sm ${msg.senderName === user.name
+              <div className={`px-4 py-2.5 rounded-2xl max-w-[80%] text-sm font-medium shadow-sm ${
+                msg.senderName === user.name
                   ? 'bg-indigo-600 text-white rounded-tr-none'
-                  : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
+                  : msg.senderName.includes('Admin')
+                    ? 'bg-amber-50 text-emerald-950 border-2 border-amber-500/20 rounded-tl-none font-bold'
+                    : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
                 }`}>
                 {msg.content}
               </div>
