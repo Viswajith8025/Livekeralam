@@ -84,6 +84,14 @@ const AdminHeader = ({
               Event Chats
             </button>
             <button 
+              onClick={() => setActiveMessageSubTab('support')}
+              className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
+                activeMessageSubTab === 'support' ? 'bg-emerald-950 text-gold-500 border border-emerald-900' : 'text-gray-400'
+              }`}
+            >
+              Support Portal
+            </button>
+            <button 
               onClick={() => setActiveMessageSubTab('inquiries')}
               className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
                 activeMessageSubTab === 'inquiries' ? 'bg-emerald-50 text-emerald-900 border border-emerald-100' : 'text-gray-400'

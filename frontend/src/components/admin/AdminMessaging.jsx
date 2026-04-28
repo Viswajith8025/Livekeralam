@@ -21,16 +21,16 @@ const AdminMessaging = ({
 }) => {
   return (
     <div className="bg-white rounded-[3rem] border border-gray-100 shadow-2xl shadow-gray-100 overflow-hidden">
-      {activeMessageSubTab === 'chats' ? (
+      {(activeMessageSubTab === 'chats' || activeMessageSubTab === 'support') ? (
         <div className="flex bg-white h-[650px]">
           {/* Conversations Sidebar */}
           <div className="w-1/3 border-r border-gray-100 flex flex-col bg-gray-50/30">
             <div className="p-6 border-b border-gray-100 bg-white flex items-center justify-between">
               <h3 className="font-black text-gray-900 font-display flex items-center gap-2">
                  <MessageSquare className="w-4 h-4 text-emerald-900" />
-                 {selectedEventId ? 'User Threads' : 'Event Channels'}
+                 {activeMessageSubTab === 'support' ? 'Support Threads' : (selectedEventId ? 'User Threads' : 'Event Channels')}
               </h3>
-              {selectedEventId && (
+              {(selectedEventId && activeMessageSubTab === 'chats') && (
                 <button 
                   onClick={() => { setSelectedEventId(null); setSelectedUserId(null); }}
                   className="text-xs font-black text-emerald-900 uppercase tracking-widest hover:underline"
@@ -40,54 +40,96 @@ const AdminMessaging = ({
               )}
             </div>
             <div className="flex-1 overflow-y-auto">
-              {!selectedEventId ? (
-                eventThreads.length === 0 ? (
+              {activeMessageSubTab === 'support' ? (
+                // Support Specific Logic
+                eventThreads.filter(t => t.eventId === 'support').length === 0 ? (
                   <div className="p-10 text-center opacity-30">
-                    <p className="text-xs font-bold uppercase tracking-widest">No active channels</p>
+                    <p className="text-xs font-bold uppercase tracking-widest">No active support threads</p>
                   </div>
                 ) : (
-                  eventThreads.map(thread => (
-                    <button 
-                      key={thread.eventId}
-                      onClick={() => setSelectedEventId(thread.eventId)}
-                      className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedEventId === thread.eventId ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
-                    >
-                      <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
-                         {thread.eventTitle[0]?.toUpperCase()}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-1">
-                          <h4 className="font-black text-gray-900 text-sm truncate">{thread.eventTitle}</h4>
+                  // For support, we go straight to users list for the 'support' virtual event
+                  activeEventUsers.length === 0 && selectedEventId !== 'support' ? (
+                    // If support selectedEventId is not set, set it automatically if support threads exist
+                    <div className="p-10 text-center">
+                       <button 
+                        onClick={() => setSelectedEventId('support')}
+                        className="text-xs font-black text-emerald-900 underline uppercase tracking-widest"
+                       >
+                         Initialize Support Line
+                       </button>
+                    </div>
+                  ) : (
+                    activeEventUsers.map(userThread => (
+                      <button 
+                        key={userThread.id}
+                        onClick={() => setSelectedUserId(userThread.id)}
+                        className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedUserId === userThread.id ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
+                      >
+                        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
+                           <Users className="w-5 h-5" />
                         </div>
-                        <p className="text-xs text-gray-400 font-bold uppercase">Click to see users</p>
-                      </div>
-                    </button>
-                  ))
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-black text-gray-900 text-sm truncate">{userThread.name}</h4>
+                            <span className="text-[8px] font-black text-gray-400 uppercase">{new Date(userThread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                          </div>
+                          <p className="text-xs text-gray-500 line-clamp-1 font-medium">{userThread.lastMessage.content}</p>
+                        </div>
+                      </button>
+                    ))
+                  )
                 )
               ) : (
-                activeEventUsers.length === 0 ? (
-                  <div className="p-10 text-center opacity-30">
-                    <p className="text-xs font-bold uppercase tracking-widest">No user threads</p>
-                  </div>
-                ) : (
-                  activeEventUsers.map(userThread => (
-                    <button 
-                      key={userThread.id}
-                      onClick={() => setSelectedUserId(userThread.id)}
-                      className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedUserId === userThread.id ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
-                    >
-                      <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
-                         <Users className="w-5 h-5" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-1">
-                          <h4 className="font-black text-gray-900 text-sm truncate">{userThread.name}</h4>
-                          <span className="text-[8px] font-black text-gray-400 uppercase">{new Date(userThread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                // Event Chats Logic
+                !selectedEventId ? (
+                  eventThreads.filter(t => t.eventId !== 'support').length === 0 ? (
+                    <div className="p-10 text-center opacity-30">
+                      <p className="text-xs font-bold uppercase tracking-widest">No active channels</p>
+                    </div>
+                  ) : (
+                    eventThreads.filter(t => t.eventId !== 'support').map(thread => (
+                      <button 
+                        key={thread.eventId}
+                        onClick={() => setSelectedEventId(thread.eventId)}
+                        className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedEventId === thread.eventId ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
+                      >
+                        <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
+                           {thread.eventTitle[0]?.toUpperCase()}
                         </div>
-                        <p className="text-xs text-gray-500 line-clamp-1 font-medium">{userThread.lastMessage.content}</p>
-                      </div>
-                    </button>
-                  ))
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-black text-gray-900 text-sm truncate">{thread.eventTitle}</h4>
+                          </div>
+                          <p className="text-xs text-gray-400 font-bold uppercase">Click to see users</p>
+                        </div>
+                      </button>
+                    ))
+                  )
+                ) : (
+                  activeEventUsers.length === 0 ? (
+                    <div className="p-10 text-center opacity-30">
+                      <p className="text-xs font-bold uppercase tracking-widest">No user threads</p>
+                    </div>
+                  ) : (
+                    activeEventUsers.map(userThread => (
+                      <button 
+                        key={userThread.id}
+                        onClick={() => setSelectedUserId(userThread.id)}
+                        className={`w-full p-6 text-left flex items-start gap-4 transition-all hover:bg-white border-b border-gray-100/50 ${selectedUserId === userThread.id ? 'bg-white border-l-4 border-l-emerald-900' : ''}`}
+                      >
+                        <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-900 font-black text-xs shrink-0">
+                           <Users className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between items-start mb-1">
+                            <h4 className="font-black text-gray-900 text-sm truncate">{userThread.name}</h4>
+                            <span className="text-[8px] font-black text-gray-400 uppercase">{new Date(userThread.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                          </div>
+                          <p className="text-xs text-gray-500 line-clamp-1 font-medium">{userThread.lastMessage.content}</p>
+                        </div>
+                      </button>
+                    ))
+                  )
                 )
               )}
             </div>

@@ -137,8 +137,13 @@ const AdminDashboard = () => {
     } else if (activeTab === 'places') {
       fetchPlaces();
     } else if (activeTab === 'messages') {
-      if (activeMessageSubTab === 'chats') {
+      if (activeMessageSubTab === 'chats' || activeMessageSubTab === 'support') {
         fetchMessages();
+        if (activeMessageSubTab === 'support') {
+          setSelectedEventId('support');
+        } else if (selectedEventId === 'support') {
+          setSelectedEventId(null);
+        }
       } else {
         fetchContactMessages();
       }

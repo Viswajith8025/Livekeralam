@@ -306,7 +306,7 @@ const Profile = () => {
                         </section>
 
                         {/* Heritage Support Chat */}
-                        {enquiries.some(enq => enq.status === 'replied') && (
+                        {user && (
                             <section className="py-16 border-t border-emerald-950/5">
                                 <div className="bg-emerald-900 rounded-[3rem] p-10 md:p-14 relative overflow-hidden shadow-2xl shadow-emerald-900/40">
                                     {/* Decorative patterns */}
@@ -319,8 +319,12 @@ const Profile = () => {
                                                 <ShieldCheck className="w-3.5 h-3.5 text-gold-500" />
                                                 <span className="text-[10px] font-black text-gold-500 uppercase tracking-widest">Active Guardians Line</span>
                                             </div>
-                                            <h3 className="text-4xl font-display text-white italic">Heritage <span className="text-gold-500">Support.</span></h3>
-                                            <p className="text-emerald-100/60 font-medium max-w-md leading-relaxed">The guardians have responded to your enquiry. Step into the private chambers for a real-time dialogue.</p>
+                                            <h3 className="text-4xl font-display text-white italic">Heritage <span className="text-gold-500">Support Portal.</span></h3>
+                                            <p className="text-emerald-100/60 font-medium max-w-md leading-relaxed">
+                                                {enquiries.some(enq => enq.status === 'replied') 
+                                                    ? 'The guardians have responded to your enquiry. Step into the private chambers for a real-time dialogue.' 
+                                                    : 'Establish a private line with our heritage curators for personalized journey assistance.'}
+                                            </p>
                                         </div>
                                         
                                         <button 
