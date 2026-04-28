@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Users, Send, AlertCircle, Plus } from 'lucide-react';
+import { MessageSquare, Users, Send, AlertCircle, Plus, ShieldCheck } from 'lucide-react';
 
 const AdminMessaging = ({ 
   messages, 
@@ -101,12 +101,19 @@ const AdminMessaging = ({
                 <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white shadow-sm z-10">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-emerald-900 flex items-center justify-center text-white font-black text-xs">
-                       <Users className="w-5 h-5" />
+                       {selectedEventId === 'support' ? <ShieldCheck className="w-5 h-5 text-gold-500" /> : <Users className="w-5 h-5" />}
                     </div>
                     <div>
                       <h4 className="font-black text-gray-900">{activeEventUsers.find(u => u.id === selectedUserId)?.name || 'Private Chat'}</h4>
                       <p className="text-[8px] text-emerald-800 font-black uppercase tracking-widest flex items-center gap-1">
-                         Thread on: {eventThreads.find(t => t.eventId === selectedEventId)?.eventTitle}
+                         {selectedEventId === 'support' ? (
+                           <>
+                             <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                             Secure Heritage Support Line
+                           </>
+                         ) : (
+                           `Thread on: ${eventThreads.find(t => t.eventId === selectedEventId)?.eventTitle}`
+                         )}
                       </p>
                     </div>
                   </div>
@@ -114,10 +121,13 @@ const AdminMessaging = ({
 
                 {/* Messages Area */}
                 <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-gray-50/20">
-                  {messages.filter(m => 
-                    (m.event?._id === selectedEventId || m.event === selectedEventId) && 
-                    (m.sender === selectedUserId || m.recipient === selectedUserId || (m.senderName.toLowerCase().includes('admin') && m.recipient === selectedUserId))
-                  ).slice().reverse().map((msg, idx) => (
+                  {messages.filter(m => {
+                    if (selectedEventId === 'support') {
+                      return m.room === 'support' && (m.sender === selectedUserId || m.recipient === selectedUserId);
+                    }
+                    return (m.event?._id === selectedEventId || m.event === selectedEventId) && 
+                           (m.sender === selectedUserId || m.recipient === selectedUserId || (m.senderName.toLowerCase().includes('admin') && m.recipient === selectedUserId));
+                  }).slice().reverse().map((msg, idx) => (
                     <div key={msg._id || idx} className={`flex flex-col ${msg.senderName.toLowerCase().includes('admin') ? 'items-end' : 'items-start'}`}>
                       <div className="flex items-center gap-2 mb-1.5 px-1">
                         <span className={`text-xs font-black uppercase tracking-tighter ${msg.senderName.toLowerCase().includes('admin') ? 'text-emerald-900' : 'text-gray-400'}`}>
