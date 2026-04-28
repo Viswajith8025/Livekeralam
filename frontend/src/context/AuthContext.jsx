@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     user,
     token,
-    isLoggedIn: !!token && token !== 'null' && token !== 'undefined',
+    isLoggedIn: !!user && !!token && token !== 'null' && token !== 'undefined',
     isAdmin: user?.role === 'admin',
     loading,
     login,

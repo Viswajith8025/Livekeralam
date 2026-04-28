@@ -120,7 +120,8 @@ const sendTokenResponse = (user, statusCode, res) => {
       email: user.email,
       phone: user.phone,
       interests: user.interests || [],
-      role: user.role
+      role: user.role,
+      profileImage: user.profileImage
     }
   });
 };
