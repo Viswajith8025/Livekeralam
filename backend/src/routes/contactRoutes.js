@@ -3,15 +3,17 @@ const {
   submitContact,
   getContacts,
   replyToContact,
-  deleteContact
+  deleteContact,
+  getMyEnquiries
 } = require('../controllers/contactController');
 
 const router = express.Router();
 
-const { protect, authorize } = require('../middlewares/authMiddleware');
+const { protect, authorize, optionalProtect } = require('../middlewares/authMiddleware');
 const { apiLimiter } = require('../middlewares/rateLimit');
 
-router.post('/', apiLimiter, submitContact);
+router.post('/', optionalProtect, apiLimiter, submitContact);
+router.get('/me', protect, getMyEnquiries);
 
 // Admin only routes
 router.use(protect);

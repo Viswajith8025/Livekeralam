@@ -30,6 +30,10 @@ const contactSchema = new mongoose.Schema(
     },
     adminReply: {
       type: String
+    },
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User'
     }
   },
   {

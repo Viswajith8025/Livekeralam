@@ -9,9 +9,14 @@ exports.submitContact = asyncHandler(async (req, res, next) => {
   const { name, email, subject, message } = req.body;
   
   try {
-    const contact = await Contact.create({
-      name, email, subject, message
-    });
+    const contactData = { name, email, subject, message };
+    
+    // If user is logged in (via optionalProtect), link the message
+    if (req.user) {
+      contactData.user = req.user.id;
+    }
+
+    const contact = await Contact.create(contactData);
     
     res.status(201).json({
       success: true,
@@ -80,5 +85,18 @@ exports.deleteContact = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: {}
+  });
+});
+
+// @desc    Get current user's enquiries
+// @route   GET /api/v1/contact/me
+// @access  Private
+exports.getMyEnquiries = asyncHandler(async (req, res, next) => {
+  const enquiries = await Contact.find({ user: req.user.id }).sort('-createdAt');
+
+  res.status(200).json({
+    success: true,
+    count: enquiries.length,
+    data: enquiries
   });
 });

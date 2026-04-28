@@ -56,9 +56,20 @@ const Profile = () => {
     });
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [enquiries, setEnquiries] = useState([]);
 
     useEffect(() => {
         if (user) {
+            const fetchEnquiries = async () => {
+                try {
+                    const response = await api.get('/contact/me');
+                    setEnquiries(response.data.data);
+                } catch (err) {
+                    console.error('Enquiry fetch error:', err);
+                }
+            };
+            fetchEnquiries();
+            
             const parts = getInitialPhoneParts();
             setFormData({
                 name: user.name,
@@ -290,6 +301,58 @@ const Profile = () => {
                                     );
                                 })}
                             </div>
+                        </section>
+
+                        {/* Support History */}
+                        <section className="space-y-10 py-16 border-t border-emerald-950/5">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <span className="text-[10px] font-black text-emerald-900/30 uppercase tracking-[0.4em]">Feedback Loop</span>
+                                    <h3 className="text-3xl font-display text-emerald-950 italic">Enquiry <span className="text-gold-600">History.</span></h3>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-display text-emerald-950">{enquiries.length}</span>
+                                    <span className="text-[10px] font-black text-emerald-900/40 uppercase tracking-widest">Stories</span>
+                                </div>
+                            </div>
+
+                            {enquiries.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-6">
+                                    {enquiries.map((enq) => (
+                                        <div key={enq._id} className="bg-white border border-emerald-900/5 rounded-[2rem] p-8 shadow-sm hover:shadow-md transition-all group">
+                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                                                <div className="space-y-1">
+                                                    <span className="text-[10px] font-black text-gold-600 uppercase tracking-widest">{enq.subject}</span>
+                                                    <p className="text-[10px] text-emerald-900/30 font-bold uppercase tracking-widest">{new Date(enq.createdAt).toLocaleDateString()}</p>
+                                                </div>
+                                                <span className={`self-start md:self-auto px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                                                    enq.status === 'replied' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+                                                }`}>
+                                                    {enq.status}
+                                                </span>
+                                            </div>
+                                            <div className="p-6 bg-emerald-900/[0.02] rounded-2xl border border-emerald-900/5 mb-6">
+                                                <p className="text-sm text-emerald-950 font-medium leading-relaxed italic opacity-70">"{enq.message}"</p>
+                                            </div>
+                                            {enq.adminReply && (
+                                                <div className="space-y-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-1.5 h-6 bg-gold-500 rounded-full"></div>
+                                                        <span className="text-[10px] font-black text-emerald-950 uppercase tracking-widest">Chronicle Admin Response</span>
+                                                    </div>
+                                                    <div className="p-6 bg-gold-500/5 border border-gold-500/10 rounded-2xl">
+                                                        <p className="text-sm text-emerald-950 font-bold leading-relaxed">{enq.adminReply}</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="p-12 bg-emerald-900/[0.02] border border-dashed border-emerald-900/10 rounded-[2.5rem] text-center">
+                                    <p className="text-emerald-900/30 font-bold uppercase tracking-widest text-xs italic">Your journey has been smooth. No enquiries logged yet.</p>
+                                </div>
+                            )}
                         </section>
 
                         <section className="pt-16 border-t border-emerald-950/5">
