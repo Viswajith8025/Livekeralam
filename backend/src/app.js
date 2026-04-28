@@ -21,6 +21,9 @@ const errorHandler = require('./middlewares/error');
 
 const app = express();
 
+// Trust proxy for Render/Vercel rate limiting
+app.set('trust proxy', 1);
+
 // Root route for Render/Production health check
 app.get('/', (req, res) => {
   res.status(200).json({ 
